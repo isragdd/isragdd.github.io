@@ -3,39 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>isragdd’s Homepage</title>
+  <title>isragdd’s Portfolio</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header>
-    <h1>Welcome to my GitHub Page 👋</h1>
-    <p>Projects, experiments, and fun stuff all in one place.</p>
+    <h1 class="title">isragdd</h1>
+    <p class="subtitle">Developer | Game Maker | Creator</p>
   </header>
 
   <main>
-    <section class="card">
+    <section class="card about">
       <h2>About Me</h2>
-      <p>Hey! I’m isragdd, a dev who likes making cool projects and exploring new ideas.</p>
+      <h2 class="about-text">Hey! I’m isragdd, a dev who likes making cool projects and games.</h2>
+    </section>
+    
+    <section class="card lang">
+    <h2>Main Languages</h2>
+    <ul>
+      <li>Lua/u</li>
+      <li>Python</li>
+      <li>JavaScript</li>
+      <li>HTML</li>
+    </ul>
     </section>
 
-    <section class="card">
-      <h2>Projects</h2>
-      <ul>
-        <li><a href="#">Project One</a></li>
-        <li><a href="#">Project Two</a></li>
-        <li><a href="#">Project Three</a></li>
-      </ul>
-    </section>
 
-    <section class="card">
-      <h2>Contact</h2>
-      <p>Email: <a href="mailto:isragdd@gmail.com">isragdd@gmail.com</a></p>
-      <p>GitHub: <a href="https://github.com/isragdd">isragdd</a></p>
-    </section>
+    <section class="card contact">
+    <h2>Contact Me</h2>
+    <div class="contact-info">
+      <a href="https://mail.google.com/mail/u/0/?fs=1&to=isragdd@gmail.com&su=Talk%20To%20Me!&body=Hi!&&tf=cm" target="_blank" class="contact-link">
+        <img src="email.svg" alt="Email Icon" class="icon">
+        <span class="text">isragdd@gmail.com</span>
+      </a>
+      <a href="https://github.com/isragdd" target="_blank" class="contact-link">
+        <img src="github.svg" alt="GitHub Icon" class="icon">
+        <span class="text">@isragdd</span>
+      </a>
+      <a href="http://discord.com/users/1206317093327347793" target="_blank" class="contact-link">
+        <img src="discord.svg" alt="Discord Icon" class="icon">
+        <span class="text">@isragdd</span>
+      </a>
+    </div>
+  </section>
   </main>
 
   <footer>
-    <p>© 2025 isragdd. Built with ❤️ and HTML5 + CSS3.</p>
+    <p>© 2025 isragdd. Made with ❤️</p>
   </footer>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>
