@@ -1,21 +1,197 @@
-<h1>hi</h1>hi
-<button onclick="alert('hello world')">click me</button>
-<blockquote>this is a blockquote</blockquote>
-<area aria-label="this is an aria label">a</area>
-<script>
-  console.log('This is a script tag');
-  //do something cool
-    function doSomethingCool() {
-        console.log('Doing something cool!');
-    }
-    doSomethingCool();
-    //minigame or sum with buttons below:
-    let count = 0;
-    function incrementCount() {
-        count++;
-        document.getElementById('countDisplay').innerText = count;
-    }
-</script>
-
-<button onclick="incrementCount()">Click me!</button>
-<h4 id="countDisplay">0</h4>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Task System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        .bg-gradient-player {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .bg-gradient-parent {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .bg-gradient-purple-blue {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .bg-black-40 { background-color: rgba(0, 0, 0, 0.4); }
+        .bg-blue-500-20 { background-color: rgba(59, 130, 246, 0.2); }
+        .bg-yellow-500-20 { background-color: rgba(234, 179, 8, 0.2); }
+        .bg-red-500-20 { background-color: rgba(239, 68, 68, 0.2); }
+        .bg-green-500-20 { background-color: rgba(34, 197, 94, 0.2); }
+        .bg-purple-600-30 { background-color: rgba(147, 51, 234, 0.3); }
+        .bg-gray-700-30 { background-color: rgba(55, 65, 81, 0.3); }
+        .bg-gray-700-50 { background-color: rgba(55, 65, 81, 0.5); }
+        
+        .border-yellow-500-50 { border: 2px solid rgba(234, 179, 8, 0.5); }
+        .border-green-500-50 { border: 2px solid rgba(34, 197, 94, 0.5); }
+        .border-red-500-50 { border: 2px solid rgba(239, 68, 68, 0.5); }
+        .border-purple-500-50 { border: 2px solid rgba(147, 51, 234, 0.5); }
+        .border-purple-500-30 { border: 2px solid rgba(147, 51, 234, 0.3); }
+        
+        .text-white { color: white; }
+        .text-gray-400 { color: #9ca3af; }
+        .text-gray-300 { color: #d1d5db; }
+        .text-gray-600 { color: #4b5563; }
+        .text-red-400 { color: #f87171; }
+        .text-red-500 { color: #ef4444; }
+        .text-green-400 { color: #4ade80; }
+        .text-yellow-400 { color: #fbbf24; }
+        .text-blue-400 { color: #60a5fa; }
+        .text-purple-300 { color: #d8b4fe; }
+        .text-purple-400 { color: #c084fc; }
+        
+        .min-h-screen { min-height: 100vh; }
+        .p-2 { padding: 0.5rem; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-3 { margin-top: 0.75rem; }
+        .mt-4 { margin-top: 1rem; }
+        .ml-2 { margin-left: 0.5rem; }
+        
+        .rounded { border-radius: 0.375rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        
+        .flex { display: flex; }
+        .flex-1 { flex: 1; }
+        .flex-shrink-0 { flex-shrink: 0; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+        .col-span-2 { grid-column: span 2; }
+        .gap-1 { gap: 0.25rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        
+        .space-y-2 > * + * { margin-top: 0.5rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        
+        .text-xs { font-size: 0.75rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-3xl { font-size: 1.875rem; }
+        
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        
+        .w-full { width: 100%; }
+        .max-w-sm { max-width: 24rem; }
+        .max-w-4xl { max-width: 56rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .min-w-0 { min-width: 0; }
+        
+        button {
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        button:not(:disabled):hover {
+            opacity: 0.9;
+        }
+        
+        .hover-bg-white-10:hover { background-color: rgba(255, 255, 255, 0.1); }
+        .hover-bg-purple-60-50:hover { background-color: rgba(147, 51, 234, 0.5); }
+        
+        .bg-gray-600 { background-color: #4b5563; }
+        .bg-gray-700 { background-color: #374151; }
+        .bg-gray-800 { background-color: #1f2937; }
+        .bg-purple-600 { background-color: #9333ea; }
+        .bg-green-600 { background-color: #16a34a; }
+        .bg-red-600 { background-color: #dc2626; }
+        
+        input {
+            color: white;
+            border: none;
+            outline: none;
+        }
+        
+        input::placeholder {
+            color: #6b7280;
+        }
+        
+        .fixed {
+            position: fixed;
+        }
+        
+        .inset-0 {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+        
+        .bg-black-80 {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .z-50 {
+            z-index: 50;
+        }
+        
+        .h-48 {
+            height: 12rem;
+        }
+        
+        .opacity-50 {
+            opacity: 0.5;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script src="script.js"></script>
+</body>
+</html>
