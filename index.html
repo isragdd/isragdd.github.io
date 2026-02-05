@@ -1,0 +1,21 @@
+<h1>hi</h1>hi
+<button onclick="alert('hello world')">click me</button>
+<blockquote>this is a blockquote</blockquote>
+<area aria-label="this is an aria label">a</area>
+<script>
+  console.log('This is a script tag');
+  //do something cool
+    function doSomethingCool() {
+        console.log('Doing something cool!');
+    }
+    doSomethingCool();
+    //minigame or sum with buttons below:
+    let count = 0;
+    function incrementCount() {
+        count++;
+        document.getElementById('countDisplay').innerText = count;
+    }
+</script>
+
+<button onclick="incrementCount()">Click me!</button>
+<h4 id="countDisplay">0</h4>
