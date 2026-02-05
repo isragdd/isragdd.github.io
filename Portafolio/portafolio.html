@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>isragdd's Portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Particle Container -->
+  <div id="tsparticles"></div>
+  
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-logo">
+      <a href="index.html">isragdd</a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html" class="nav-link active">🏠 Home</a></li>
+      <li><a href="projects.html" class="nav-link">Projects</a></li>
+      <li><a href="contact.html" class="nav-link">Contact</a></li>
+    </ul>
+  </nav>
+
+  <header>
+    <!-- Hero Section -->
+    <h1 class="title">isragdd</h1>
+    <p class="subtitle">Developer | Game Maker | Creator</p>
+  </header>
+
+  <main>
+    <section class="card about">
+      <h2>About Me</h2>
+      <p class="about-text">Hey! I'm isragdd, a dev who likes making cool projects and games.</p>
+    </section>
+
+    <section class="card lang">
+      <h2>Main Languages</h2>
+      <ul>
+        <li>Lua/u</li>
+        <li>Python</li>
+        <li>JavaScript</li>
+        <li>HTML</li>
+      </ul>
+    </section>
+
+    <section class="card projects-main">
+      <h2>Featured Projects</h2>
+      <button class="main-btn" onclick="window.location.href='projects.html'">See Projects</button>
+    </section>
+
+    <section class="card contact-main">
+      <h2>Contact</h2>
+      <button class="main-btn" onclick="window.location.href='contact.html'">Go to Contact Page</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 isragdd. Made with ❤️</p>
+  </footer>
+
+  <script>
+    // Navbar transparency on scroll
+    window.addEventListener('scroll', () => {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+  </script>
+  <script type="module" src="script.js"></script>
+</body>
+</html>

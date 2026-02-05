@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects - isragdd</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Particle Container -->
+  <div id="tsparticles"></div>
+  
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-logo">
+      <a href="index.html">isragdd</a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html" class="nav-link">🏠 Home</a></li>
+      <li><a href="projects.html" class="nav-link active">Projects</a></li>
+      <li><a href="contact.html" class="nav-link">Contact</a></li>
+    </ul>
+  </nav>
+
+  <header>
+    <h1 class="title">My Projects</h1>
+    <p class="subtitle">Cool stuff I've built</p>
+  </header>
+
+  <main>
+    <section class="card projects">
+      <h2>Featured Projects</h2>
+      <div class="project-list">
+        <div class="project-card" data-title="Cool Game" data-desc="A fun and challenging game made with Lua. Features multiple levels, power-ups, and an engaging storyline that keeps players coming back for more." data-images="github.svg,discord.svg">
+          <img src="https://placehold.co/300x180/7928ca/ffffff?text=Cool+Game" class="project-thumb" alt="Cool Game Thumbnail">
+          <div class="project-title">Cool Game</div>
+          <div class="project-desc">A fun and challenging game made with Lua.</div>
+        </div>
+
+        <div class="project-card" data-title="Web Tool" data-desc="A useful web tool for productivity. Built with modern JavaScript and featuring a clean, intuitive interface designed to boost your daily workflow." data-images="email.svg">
+          <img src="https://placehold.co/300x180/2a95fa/ffffff?text=Web+Tool" class="project-thumb" alt="Web Tool Thumbnail">
+          <div class="project-title">Web Tool</div>
+          <div class="project-desc">A useful web tool for productivity.</div>
+        </div>
+
+        <div class="project-card" data-title="Mobile App" data-desc="A sleek mobile application that combines functionality with beautiful design. Created using React Native with custom animations and smooth user interactions." data-images="github.svg,email.svg">
+          <img src="https://placehold.co/300x180/ff0080/ffffff?text=Mobile+App" class="project-thumb" alt="Mobile App Thumbnail">
+          <div class="project-title">Mobile App</div>
+          <div class="project-desc">A sleek mobile application with beautiful design.</div>
+        </div>
+      </div>
+    </section>
+
+    
+    <div class="project-modal" id="projectModal">
+      <div class="modal-content">
+        <button class="modal-close" id="modalClose">×</button>
+        <h2 id="modalTitle"></h2>
+        <div class="modal-images" id="modalImages"></div>
+        <p id="modalDesc"></p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 isragdd. Made with ❤️</p>
+  </footer>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
