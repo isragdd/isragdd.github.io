@@ -115,7 +115,7 @@ const icons = {
 // Database API Functions
 async function loadFromDatabase() {
     try {
-        const response = await fetch(`${API_BASE}/state`);
+        const response = await fetch(`${API_BASE}/api/state`);
         if (!response.ok) throw new Error('Failed to load state');
         
         const data = await response.json();
@@ -136,7 +136,7 @@ async function loadFromDatabase() {
 
 async function saveToDatabase() {
     try {
-        const response = await fetch(`${API_BASE}/state`, {
+        const response = await fetch(`${API_BASE}/api/state`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -476,7 +476,7 @@ async function addCustomTask() {
     };
     
     try {
-        const response = await fetch(`${API_BASE}/custom-tasks`, {
+        const response = await fetch(`${API_BASE}/api/custom-tasks`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ task: newTask })
@@ -513,7 +513,7 @@ async function editCustomTask(taskId) {
     const hearts = parseInt(prompt('Hearts reward:', task.hearts || 0));
     
     try {
-        const response = await fetch(`${API_BASE}/custom-tasks/${taskId}`, {
+        const response = await fetch(`${API_BASE}/api/custom-tasks/${taskId}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
@@ -536,7 +536,7 @@ async function deleteCustomTask(taskId) {
     if (!confirm('Delete this custom task?')) return;
     
     try {
-        const response = await fetch(`${API_BASE}/custom-tasks/${taskId}`, {
+        const response = await fetch(`${API_BASE}/api/custom-tasks/${taskId}`, {
             method: 'DELETE'
         });
         
