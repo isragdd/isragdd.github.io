@@ -133,7 +133,6 @@ async function loadFromDatabase() {
         return false;
     }
 }
-
 async function saveToDatabase() {
     try {
         const response = await fetch(`${API_BASE}/api/state`, {
