@@ -134,6 +134,27 @@ async function loadFromDatabase() {
     }
 }
 
+async function testApi() {
+    const testVar = 'test'
+    const testInt = 123
+    try {
+        const response = await fetch(`${API_BASE}/api/test`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                Str: testVar,
+                Int: testInt
+            })
+        });
+        
+        if (!response.ok) throw new Error('Failed to save state');
+        return true;
+    } catch (error) {
+        console.error('Error saving to database:', error);
+        return false;
+    }
+}
+
 async function saveToDatabase() {
     try {
         const response = await fetch(`${API_BASE}/api/state`, {
@@ -197,6 +218,7 @@ async function initApp() {
     state.tasks = todayTasks;
     state.day = date;
     await saveToDatabase();
+    await testApi();
     render();
 }
 
