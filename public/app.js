@@ -8,6 +8,8 @@ let state = {
     showPw: false,
     collapsed: {},
     items: [],
+    inventory: [],
+    selectedInventoryItem: null,
     stats: { trust: 0, rupees: 0, hearts: 3, maxHearts: 5, xp: 0, level: 1, ticksToday: 0, streak: 0 },
     tasks: [],
     day: '',
@@ -91,7 +93,7 @@ const db = {
         { id: 'reflect', name: 'Reflect', days: 'daily', type: '🌕', rupees: 2, xp: 10, hearts: 1 }
     ],
     skillsLearning: [
-        { id: 'baseball', name: 'Baseball Training', days: [2,4,5,6], type: '🔴', rupees: 3, xp: 10, hearts: 1 }
+        { id: 'baseball', name: 'Baseball Training', days: [2,4,5,6], type: '🔴', rupees: 15, xp: 10, hearts: 1 }
     ]
 };
 
@@ -136,6 +138,7 @@ async function loadFromDatabase() {
         state.tasks = data.tasks || [];
         state.day = data.day || '';
         state.collapsed = data.collapsed || {};
+        state.inventory = data.inventory || [];
         
         return true;
     } catch (error) {
@@ -152,6 +155,7 @@ async function saveToDatabase() {
                 stats: state.stats,
                 tasks: state.tasks,
                 items: state.items,
+                inventory: state.inventory,
                 props: state.props,
                 custom: state.custom,
                 day: state.day,
@@ -163,7 +167,7 @@ async function saveToDatabase() {
         if (!response.ok) throw new Error('Failed to save state');
         return true;
     } catch (error) {
-        console.error('Error saving to database:', error);
+        console.error('Error sav    ing to database:', error);
         return false;
     }
 }
@@ -379,13 +383,34 @@ function buyItem(id) {
         state.stats.rupees -= item.cost;
     }
 
-    // Apply item effect if it has one
-    if (item.effect) {
-        applyItemEffect(item);
+    // Add to inventory instead of using immediately
+    state.inventory.push({
+        id: 'inv_' + Date.now(),
+        itemId: item.id,
+        emoji: item.emoji,
+        name: item.name,
+        effect: item.effect,
+        effectAmount: item.effectAmount
+    });
+
+    // Remove from shop
+    state.items = state.items.filter(x => x.id !== id);
+
+    saveToDatabase();
+    render();
+}
+
+function useInventoryItem(invId) {
+    const item = state.inventory.find(i => i.id === invId);
+    if (!item) return;
+
+    if (item.effect && ItemEffects[item.effect]) {
+        ItemEffects[item.effect](item.effectAmount);
     }
 
-    // Remove item from shop
-    state.items = state.items.filter(x => x.id !== id);
+    state.inventory = state.inventory.filter(i => i.id !== invId);
+    state.selectedInventoryItem = null;
+
     saveToDatabase();
     render();
 }
@@ -605,31 +630,66 @@ function addDailyShopItem() {
     }
 }
 
-function applyItemEffect(item) {
-    if (item.effect === 'hearts') {
-        state.stats.hearts = Math.min(state.stats.maxHearts, state.stats.hearts + item.effectAmount);
-    } else if (item.effect === 'xp') {
-        state.stats.xp += item.effectAmount;
+const ItemEffects = {
+    hearts: (amount) => {
+        state.stats.hearts = Math.min(state.stats.maxHearts, state.stats.hearts + amount);
+    },
+
+    xp: (amount) => {
+        state.stats.xp += amount;
         checkLevelUp();
-    } else if (item.effect === 'rupees') {
-        state.stats.rupees += item.effectAmount;
-    } else if (item.effect === 'random') {
+    },
+
+    rupees: (amount) => {
+        state.stats.rupees += amount;
+    },
+
+    random: () => {
         const effects = ['hearts', 'xp', 'rupees'];
         const randomEffect = effects[Math.floor(Math.random() * effects.length)];
         const amounts = { hearts: 2, xp: 100, rupees: 75 };
-        
-        if (randomEffect === 'hearts') {
-            state.stats.hearts = Math.min(state.stats.maxHearts, state.stats.hearts + amounts.hearts);
-            alert('🎉 Mystery Box gave you +2 Hearts!');
-        } else if (randomEffect === 'xp') {
-            state.stats.xp += amounts.xp;
-            alert('🎉 Mystery Box gave you +100 XP!');
-            checkLevelUp();
-        } else {
-            state.stats.rupees += amounts.rupees;
-            alert('🎉 Mystery Box gave you +75 Rupees!');
-        }
+        ItemEffects[randomEffect](amounts[randomEffect]);
+        alert(`🎉 Mystery gave ${amounts[randomEffect]} ${randomEffect}!`);
     }
+};
+
+function renderInventoryView() {
+    return `
+        <div class="min-h-screen bg-gradient-player text-white p-4">
+            <div class="bg-black-40 rounded-lg p-4">
+                <div class="flex justify-between mb-4">
+                    <h1 class="text-2xl font-bold">🎒 Inventory</h1>
+                    <button onclick="state.view='player'; render();" 
+                        class="px-4 py-2 bg-gray-700 rounded text-sm">Back</button>
+                </div>
+
+                ${state.inventory.length === 0 ? `
+                    <div class="text-center text-gray-400 p-8">
+                        Empty inventory
+                    </div>
+                ` : `
+                    <div class="grid grid-cols-3 gap-4">
+                        ${state.inventory.map(i => `
+                            <div onclick="state.selectedInventoryItem='${i.id}'; render();"
+                                class="bg-purple-600-30 rounded p-4 text-center cursor-pointer
+                                ${state.selectedInventoryItem === i.id ? 'border-2 border-yellow-400' : ''}">
+                                
+                                <div class="text-3xl mb-2">${i.emoji}</div>
+                                <div class="text-sm">${i.name}</div>
+
+                                ${state.selectedInventoryItem === i.id ? `
+                                    <button onclick="event.stopPropagation(); useInventoryItem('${i.id}')"
+                                        class="mt-3 w-full bg-green-600 rounded p-2 text-sm font-bold">
+                                        Use
+                                    </button>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `}
+            </div>
+        </div>
+    `;
 }
 
 function renderChestView() {
@@ -718,7 +778,11 @@ function renderPlayerView() {
                 <div class="flex justify-between mb-4">
                     <h1 class="text-2xl font-bold">👤 Lv${state.stats.level} Player</h1>
                     <div class="flex gap-2">
-                        ${open ? `<button onclick="state.view='shop'; render();" class="p-2 hover-bg-white-10 rounded">${icons.shoppingBag(20, 'text-yellow-400')}</button>` : ''}
+                        <div class="flex gap-2">
+                            ${open ? `<button onclick="state.view='shop'; render();" class="p-2 hover-bg-white-10 rounded">${icons.shoppingBag(20, 'text-yellow-400')}</button>` : ''}
+                            <button onclick="state.view='inventory'; render();" class="p-2 hover-bg-white-10 rounded">🎒</button>
+                            <button onclick="state.showPw=true; render();" class="p-2 hover-bg-white-10 rounded">${icons.settings(20)}</button>
+                        </div>
                         <button onclick="state.showPw=true; render();" class="p-2 hover-bg-white-10 rounded">${icons.settings(20)}</button>
                     </div>
                 </div>
@@ -1080,6 +1144,8 @@ function render() {
         app.innerHTML = renderPlayerView();
     } else if (state.view === 'chest') {
         app.innerHTML = renderChestView();
+    } else if (state.view === 'inventory') {
+        app.innerHTML = renderInventoryView();
     } else {
         app.innerHTML = renderParentView();
     }
