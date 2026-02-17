@@ -8,7 +8,7 @@ let state = {
     showPw: false,
     collapsed: {},
     items: [],
-    stats: { trust: 0, rupees: 0, hearts: 3, maxHearts: 5, xp: 0, level: 1, ticksToday: 0 },
+    stats: { trust: 0, rupees: 0, hearts: 3, maxHearts: 5, xp: 0, level: 1, ticksToday: 0, streak: 0 },
     tasks: [],
     day: '',
     custom: [],
@@ -20,50 +20,59 @@ let state = {
     }
 };
 
+// Daily shop items that refresh every day
+const dailyShopItems = [
+    { emoji: '🍎', name: 'Health Potion', cost: 15, effect: 'hearts', amount: 1 },
+    { emoji: '⚡', name: 'XP Boost', cost: 20, effect: 'xp', amount: 50 },
+    { emoji: '💎', name: 'Gem Bundle', cost: 25, effect: 'rupees', amount: 50 },
+    { emoji: '🎲', name: 'Mystery Box', cost: 30, effect: 'random', amount: 0 }
+];
+
 // Database of tasks
 const db = {
     selfRegulation: [
-        { id: 'shower', name: 'Shower', days: [1,3,5], type: '🔴', rupees: 1, xp: 5 },
-        { id: 'washFeet', name: 'Wash feet', days: [2,4,6], type: '🔴', rupees: 1, xp: 5 },
+        { id: 'shower', name: 'Shower', days: [2,4,5,6], type: '🔴', rupees: 1, xp: 5 },
+        { id: 'washFeet', name: 'Wash feet', days: [1,3], type: '🔴', rupees: 1, xp: 5 },
         { id: 'washFace', name: 'Wash face', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
         { id: 'brushAM', name: 'Brush AM', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
         { id: 'brushPM', name: 'Brush PM', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'clothes', name: 'Clean clothes', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'clothes', name: 'Change clothes', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
         { id: 'hair', name: 'Comb hair', days: 'daily', type: '🌕', rupees: 2, xp: 10 },
         { id: 'emotion', name: 'Emotion check', days: 'daily', type: '🌕', rupees: 2, xp: 10 },
         { id: 'bedtime', name: 'Bed on time', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'water1', name: 'Water waking', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'water8', name: '8 glasses', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'water1', name: 'Water on waking', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'water8', name: '8 glasses a day', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
         { id: 'stretch', name: 'Stretch', days: 'daily', type: '🌕', rupees: 2, xp: 10 },
         { id: 'meditate', name: 'Meditation', days: 'daily', type: '🟢', rupees: 3, xp: 15, hearts: 1 },
-        { id: 'journal', name: 'Journal', days: 'daily', type: '🟢', rupees: 3, xp: 15, hearts: 1 }
+        { id: 'journal', name: 'Journaling', days: 'daily', type: '🟢', rupees: 3, xp: 15, hearts: 1 }
     ],
     taskCompletion: [
-        { id: 'dust', name: 'Dust', days: [2,5], type: '🔴', rupees: 1, xp: 5 },
+        { id: 'dust', name: 'Dust Room', days: [2,5], type: '🔴', rupees: 1, xp: 5 },
         { id: 'bed', name: 'Make bed', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'tidy', name: 'Tidy', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'sweep', name: 'Sweep', days: [2,5], type: '🔴', rupees: 1, xp: 5 },
-        { id: 'dish1', name: 'Dishes 1st', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'dish2', name: 'Dishes 2nd', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'dish3', name: 'Dishes 3rd', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'tidy', name: 'Tidy Room', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'sweep', name: 'Sweep Room', days: [2,5], type: '🔴', rupees: 1, xp: 5 },
+        { id: 'dish1', name: 'Wash dishes 1st', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'dish2', name: 'Wash dishes 2nd', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'dish3', name: 'Wash dishes 3rd', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
         { id: 'put1', name: 'Put dishes 1st', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
         { id: 'put2', name: 'Put dishes 2nd', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
         { id: 'put3', name: 'Put dishes 3rd', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'desk', name: 'Desk', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'laundry', name: 'Laundry', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'desk', name: 'Organize desk', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'laundry', name: 'Laundry', days: [1], type: '🔴', rupees: 1, xp: 5 },
         { id: 'noRemind', name: 'No reminder', days: 'daily', type: '🌕', rupees: 2, xp: 10 },
-        { id: 'onTime', name: 'On time', days: 'daily', type: '🌕', rupees: 2, xp: 10 }
+        { id: 'onTime', name: 'Tasks on time', days: 'daily', type: '🌕', rupees: 2, xp: 10 },
+        { id: 'trash', name: 'Takeout Trash', days: [5], type: '🔴', rupees: 3, xp: 10}
     ],
     systemIntegrity: [
         { id: 'floor', name: 'Floor clear', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
         { id: 'clothes2', name: 'Clothes off floor', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'items', name: 'Items place', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'bathroom', name: 'Bathroom', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'sink', name: 'Sink', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'table', name: 'Table', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'tools', name: 'Tools', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'containers', name: 'Containers', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'restore', name: 'Restore', days: 'daily', type: '🔴', rupees: 1, xp: 5 }
+        { id: 'items', name: 'Items in place', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'bathroom', name: 'Bathroom Clean', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'sink', name: 'Sink Clean', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'table', name: 'Table Clean', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'tools', name: 'Tools returned after use', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'containers', name: 'Containers closed properly', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'restore', name: 'Restore space after use', days: 'daily', type: '🔴', rupees: 1, xp: 5 }
     ],
     errorHandling: [
         { id: 'yell', name: 'No yelling', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
@@ -73,15 +82,17 @@ const db = {
         { id: 'accept', name: 'Accept', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
         { id: 'walk', name: 'Walk away', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
         { id: 'return', name: 'Return calm', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'complain', name: 'No complain', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
+        { id: 'complain', name: 'No complaining', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
         { id: 'sorry', name: 'Apologize', days: 'daily', type: '🔴', rupees: 1, xp: 5 },
-        { id: 'admit', name: 'Admit', days: 'daily', type: '🌕', rupees: 2, xp: 10 },
+        { id: 'admit', name: 'Admit error', days: 'daily', type: '🌕', rupees: 2, xp: 10 },
         { id: 'tryAgain', name: 'Try again', days: 'daily', type: '🌕', rupees: 2, xp: 10 },
         { id: 'selfFix', name: 'Self-correct', days: 'daily', type: '🔴', rupees: 1, xp: 5, hearts: 1 },
         { id: 'help', name: 'Ask help', days: 'daily', type: '🔴', rupees: 1, xp: 5, hearts: 1 },
         { id: 'reflect', name: 'Reflect', days: 'daily', type: '🌕', rupees: 2, xp: 10, hearts: 1 }
     ],
-    skillsLearning: []
+    skillsLearning: [
+        { id: 'baseball', name: 'Baseball Training', days: [2,4,5,6], type: '🔴', rupees: 3, xp: 10, hearts: 1 }
+    ]
 };
 
 const categoryNames = {
@@ -92,12 +103,11 @@ const categoryNames = {
     skillsLearning: '5. Skills & Learning'
 };
 
-// Icon generators
 const icons = {
     heart: (size, fill) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${fill}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`,
     lock: (size, className = '') => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="${className}"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`,
     unlock: (size, className = '') => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="${className}"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 0 9.9-1"></path></svg>`,
-    settings: (size, fill) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="${fill}"/><path fill-rule="evenodd" clip-rule="evenodd" d="M4.93 4.93C5.32 4.54 5.95 4.54 6.34 4.93L7.2 5.79C7.59 6.18 8.22 6.18 8.61 5.79L9.47 4.93C9.86 4.54 10.49 4.54 10.88 4.93L12 6.05L13.12 4.93C13.51 4.54 14.14 4.54 14.53 4.93L15.39 5.79C15.78 6.18 16.41 6.18 16.8 5.79L17.66 4.93C18.05 4.54 18.68 4.54 19.07 4.93C19.46 5.32 19.46 5.95 19.07 6.34L18.21 7.2C17.82 7.59 17.82 8.22 18.21 8.61L19.07 9.47C19.46 9.86 19.46 10.49 19.07 10.88L17.95 12L19.07 13.12C19.46 13.51 19.46 14.14 19.07 14.53L18.21 15.39C17.82 15.78 17.82 16.41 18.21 16.8L19.07 17.66C19.46 18.05 19.46 18.68 19.07 19.07C18.68 19.46 18.05 19.46 17.66 19.07L16.8 18.21C16.41 17.82 15.78 17.82 15.39 18.21L14.53 19.07C14.14 19.46 13.51 19.46 13.12 19.07L12 17.95L10.88 19.07C10.49 19.46 9.86 19.46 9.47 19.07L8.61 18.21C8.22 17.82 7.59 17.82 7.2 18.21L6.34 19.07C5.95 19.46 5.32 19.46 4.93 19.07C4.54 18.68 4.54 18.05 4.93 17.66L5.79 16.8C6.18 16.41 6.18 15.78 5.79 15.39L4.93 14.53C4.54 14.14 4.54 13.51 4.93 13.12L6.05 12L4.93 10.88C4.54 10.49 4.54 9.86 4.93 9.47L5.79 8.61C6.18 8.22 6.18 7.59 5.79 7.2L4.93 6.34C4.54 5.95 4.54 5.32 4.93 4.93Z" fill="${fill}"/></svg>`,
+    settings: (size) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6m0 6v6"></path><path d="m4.93 4.93 4.24 4.24m5.66 5.66 4.24 4.24"></path><path d="M1 12h6m6 0h6"></path><path d="m4.93 19.07 4.24-4.24m5.66-5.66 4.24-4.24"></path></svg>`,
     checkCircle: (size, className = '') => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="${className}"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
     circle: (size, className = '') => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="${className}"><circle cx="12" cy="12" r="10"></circle></svg>`,
     star: (size) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`,
@@ -192,6 +202,14 @@ async function initApp() {
         else if (Array.isArray(t.days)) inc = t.days.includes(d);
         if (inc) todayTasks.push({ ...t, completed: false, pending: false });
     });
+
+    // Add daily shop item if needed
+    addDailyShopItem();
+
+    state.tasks = todayTasks;
+    state.day = date;
+    await saveToDatabase();
+    render();
     
     state.tasks = todayTasks;
     state.day = date;
@@ -310,11 +328,20 @@ function rejectTask(id) {
 }
 
 function endDay() {
-    const ch = state.stats.ticksToday < 18 ? -5 : state.stats.ticksToday >= 25 ? 10 : 5;
+    const ch = state.stats.ticksToday < 30 ? -5 : state.stats.ticksToday >= 25 ? 10 : 5;
     state.stats.trust = Math.max(0, Math.min(100, state.stats.trust + ch));
+    
+    // Streak system
+    if (state.stats.ticksToday >= 30) {
+        state.stats.streak = (state.stats.streak || 0) + 1;
+    } else {
+        state.stats.streak = 0;
+    }
+    
     state.stats.ticksToday = 0;
     
-    alert(`Day ended! Trust ${ch > 0 ? '+' : ''}${ch}`);
+    const streakMsg = state.stats.streak > 0 ? ` | 🔥 ${state.stats.streak} day streak!` : '';
+    alert(`Day ended! Trust ${ch > 0 ? '+' : ''}${ch}${streakMsg}`);
     saveToDatabase();
     setTimeout(() => window.location.reload(), 2000);
 }
@@ -346,8 +373,20 @@ function buyItem(id) {
         return;
     }
 
-    state.stats.rupees -= item.cost;
+    if (state.stats.rupees < item.cost && state.stats.rupees !== -1) return;
+
+    if (state.stats.rupees !== -1) {
+        state.stats.rupees -= item.cost;
+    }
+
+    // Apply item effect if it has one
+    if (item.effect) {
+        applyItemEffect(item);
+    }
+
+    // Remove item from shop
     state.items = state.items.filter(x => x.id !== id);
+    saveToDatabase();
     render();
 }
 
@@ -546,6 +585,53 @@ async function deleteCustomTask(taskId) {
     }
 }
 
+function addDailyShopItem() {
+    // Check if daily item already exists
+    const hasDailyItem = state.items.some(i => i.isDaily);
+    if (!hasDailyItem) {
+        // Pick random daily item
+        const randomItem = dailyShopItems[Math.floor(Math.random() * dailyShopItems.length)];
+        const dailyItem = {
+            id: 'daily_' + Date.now(),
+            emoji: randomItem.emoji,
+            name: randomItem.name + ' (Daily)',
+            cost: randomItem.cost,
+            isDaily: true,
+            effect: randomItem.effect,
+            effectAmount: randomItem.amount
+        };
+        state.items.unshift(dailyItem);
+        saveToDatabase();
+    }
+}
+
+function applyItemEffect(item) {
+    if (item.effect === 'hearts') {
+        state.stats.hearts = Math.min(state.stats.maxHearts, state.stats.hearts + item.effectAmount);
+    } else if (item.effect === 'xp') {
+        state.stats.xp += item.effectAmount;
+        checkLevelUp();
+    } else if (item.effect === 'rupees') {
+        state.stats.rupees += item.effectAmount;
+    } else if (item.effect === 'random') {
+        const effects = ['hearts', 'xp', 'rupees'];
+        const randomEffect = effects[Math.floor(Math.random() * effects.length)];
+        const amounts = { hearts: 2, xp: 100, rupees: 75 };
+        
+        if (randomEffect === 'hearts') {
+            state.stats.hearts = Math.min(state.stats.maxHearts, state.stats.hearts + amounts.hearts);
+            alert('🎉 Mystery Box gave you +2 Hearts!');
+        } else if (randomEffect === 'xp') {
+            state.stats.xp += amounts.xp;
+            alert('🎉 Mystery Box gave you +100 XP!');
+            checkLevelUp();
+        } else {
+            state.stats.rupees += amounts.rupees;
+            alert('🎉 Mystery Box gave you +75 Rupees!');
+        }
+    }
+}
+
 function renderChestView() {
     const c = state.world.chest;
     if (!c) return '';
@@ -630,7 +716,7 @@ function renderPlayerView() {
         <div class="min-h-screen bg-gradient-player text-white p-4">
             <div class="bg-black-40 rounded-lg p-4 mb-4">
                 <div class="flex justify-between mb-4">
-                    <h1 class="text-2xl font-bold">Lv${state.stats.level} Player</h1>
+                    <h1 class="text-2xl font-bold">👤 Lv${state.stats.level} Player</h1>
                     <div class="flex gap-2">
                         ${open ? `<button onclick="state.view='shop'; render();" class="p-2 hover-bg-white-10 rounded">${icons.shoppingBag(20, 'text-yellow-400')}</button>` : ''}
                         <button onclick="state.showPw=true; render();" class="p-2 hover-bg-white-10 rounded">${icons.settings(20)}</button>
@@ -647,7 +733,7 @@ function renderPlayerView() {
                         <div class="text-2xl font-bold">${state.stats.rupees}</div>
                     </div>
                 </div>
-                <div class="mb-3 text-sm flex gap-1">${icons.zap(14)} XP: ${state.stats.xp}</div>
+                <div class="mb-3 text-sm flex gap-1">${icons.zap(14)} XP: ${state.stats.xp} | 🔥 Streak: ${state.stats.streak || 0}</div>
                 <div class="flex justify-between items-center text-sm">
                     <span>Ticks: ${state.stats.ticksToday}/30</span>
                     ${open ? 
@@ -779,7 +865,7 @@ function renderParentView() {
                 <div class="bg-black-40 rounded p-4 mb-6">
                     <h2 class="text-xl font-bold mb-4">Stats Editor</h2>
                     <div class="space-y-3">
-                        ${['hearts', 'rupees', 'trust', 'xp', 'level'].map(statName => `
+                        ${['hearts', 'rupees', 'trust', 'xp', 'level', 'streak'].map(statName => `
                             <div class="bg-gray-700-30 rounded p-3">
                                 <div class="flex justify-between items-center">
                                     <div class="flex-1">
@@ -793,7 +879,6 @@ function renderParentView() {
                                                 class="bg-gray-800 rounded p-2 w-20 text-center font-bold"
                                             />
                                             <button onclick="updateStat('${statName}', 1)" class="bg-green-600 px-3 py-1 rounded font-bold text-sm">+</button>
-                                            <span class="text-xs text-gray-400">+1 / -1</span>
                                         </div>
                                     </div>
                                     ${statName === 'hearts' ? `<div class="text-sm text-gray-400">Max: ${state.stats.maxHearts}</div>` : ''}
@@ -978,7 +1063,7 @@ function renderParentView() {
                 <div class="bg-black-40 rounded p-4 mb-6">
                     <button onclick="endDay()" class="w-full bg-purple-600 p-4 rounded font-bold text-lg">End Day</button>
                     <p class="text-sm text-gray-400 mt-2 text-center">
-                        ${state.stats.ticksToday < 30 ? '⚠️ Trust -5' : state.stats.ticksToday >= 25 ? '⭐ Trust +10' : '✓ Trust +5'}
+                        ${state.stats.ticksToday < 20 ? '⚠️ Trust -5' : state.stats.ticksToday >= 25 ? '⭐ Trust +10' : '✓ Trust +5'}
                     </p>
                 </div>
             </div>
