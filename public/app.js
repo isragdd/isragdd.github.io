@@ -106,7 +106,12 @@ const categoryNames = {
 };
 
 const icons = {
-    heart: (size, fill) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${fill}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`,
+    fire: (size, fill) => `
+    <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${fill}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2s-4 4.5-4 8a4 4 0 0 0 8 0c0-2.5-2-4.5-2-6 0-1-.5-2-2-2z"></path>
+    <path d="M12 10s-2 2-2 3.5a2 2 0 0 0 4 0C14 12 12 10 12 10z"></path>
+    </svg>
+    `,
     lock: (size, className = '') => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="${className}"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`,
     unlock: (size, className = '') => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="${className}"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 0 9.9-1"></path></svg>`,
     settings: (size) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6m0 6v6"></path><path d="m4.93 4.93 4.24 4.24m5.66 5.66 4.24 4.24"></path><path d="M1 12h6m6 0h6"></path><path d="m4.93 19.07 4.24-4.24m5.66-5.66 4.24-4.24"></path></svg>`,
@@ -160,7 +165,7 @@ async function saveToDatabase() {
                 custom: state.custom,
                 day: state.day,
                 collapsed: state.collapsed,
-                world: state.world
+                world: state.world,
             })
         });
         
@@ -800,7 +805,8 @@ function renderPlayerView() {
                         <div class="text-2xl font-bold">${state.stats.rupees}</div>
                     </div>
                 </div>
-                <div class="mb-3 text-sm flex gap-1">${icons.zap(14)} XP: ${state.stats.xp} | 🔥 Streak: ${state.stats.streak || 0}</div>
+                <div class="mb-3 text-sm flex gap-1">${icons.zap(14)} XP: ${state.stats.xp}</div>
+                <div class="mb-3 text-sm flex gap-1">${icons.fire(14,"orange")} Streak: ${state.stats.streak || 0}</div>
                 <div class="flex justify-between items-center text-sm">
                     <span>Ticks: ${state.stats.ticksToday}/30</span>
                     ${open ? 
