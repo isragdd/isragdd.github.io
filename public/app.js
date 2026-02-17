@@ -783,6 +783,7 @@ function renderPlayerView() {
                             <button onclick="state.view='inventory'; render();" class="p-2 hover-bg-white-10 rounded">🎒</button>
                             <button onclick="state.showPw=true; render();" class="p-2 hover-bg-white-10 rounded">${icons.settings(20)}</button>
                         </div>
+                    </div>
                 </div>
                 <div class="flex gap-1 mb-3">${hearts}</div>
                 <div class="grid grid-cols-2 gap-3 mb-3">
