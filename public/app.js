@@ -435,16 +435,20 @@ function addShopItem() {
     const emoji = document.getElementById('shopEmoji').value || '🎮';
     const name = document.getElementById('shopName').value;
     const cost = parseInt(document.getElementById('shopCost').value);
+    const effect = document.getElementById('shopEffect').value || 'none';
+    const effectAmount = parseInt(document.getElementById('shopAmount').value);
     
-    if (!name || !cost) {
+    if (!name || isNaN(cost) || !effect || isNaN(amount)) {
         alert('Fill all fields');
         return;
     }
     
-    state.items.push({ id: Date.now()+'', name, emoji, cost });
+    state.items.push({ id: Date.now()+'', name, emoji, cost, effect, effectAmount});
     document.getElementById('shopEmoji').value = '🎮';
     document.getElementById('shopName').value = '';
     document.getElementById('shopCost').value = '';
+    document.getElementById('shopEffect').value = '';
+    document.getElementById('shopAmount').value = '';
     saveToDatabase();
     render();
 }
@@ -982,6 +986,8 @@ function renderParentView() {
                             <input type="text" id="shopEmoji" placeholder="🎮" maxlength="2" class="bg-gray-800 rounded p-2 text-center text-2xl" />
                             <input type="text" id="shopName" placeholder="Item name" class="col-span-2 bg-gray-800 rounded p-2" />
                             <input type="number" id="shopCost" placeholder="Cost" min="1" class="bg-gray-800 rounded p-2" />
+                            <input type ="text" id="shopEffect" placeholder="Effect (e.g. rupees, xp...)"
+                            <input type="number" id="shopAmount" type="number" placeholder="Effect amount">
                         </div>
                         <button onclick="addShopItem()" class="w-full bg-green-600 p-2 rounded font-bold">Add Item</button>
                     </div>
